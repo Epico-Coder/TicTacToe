@@ -1,6 +1,7 @@
 import pygame
+import time
 
-from ai import minimax, get_best_move
+from ai import minimax, get_best_move, load_cache, save_cache
 from game import draw_x, draw_o, draw_board, draw_bar, win, WIDTH, HEIGHT, BOARD_SIZE, BG
 from utils import Position
 
@@ -9,6 +10,8 @@ pygame.init()
 new = Position()
 
 pygame.display.set_caption("TicTacToe")
+
+cache = load_cache("cache.pkl")
 
 
 def re_draw_win():
@@ -19,7 +22,7 @@ def re_draw_win():
                BOARD_SIZE * WIDTH,
                BOARD_SIZE * HEIGHT)
 
-    evaluation = minimax(new, 0, new.turn)
+    evaluation = minimax(new, 0, new.turn, cache)
     normalized = (evaluation + 10) / 20
     draw_bar(0, 0, WIDTH, 0.1 * HEIGHT, normalized)
 
@@ -37,16 +40,15 @@ def main():
     global BG, WIDTH, HEIGHT
 
     while True:
-
         if type(new.result) != int:
             if new.turn == -1:
-                move = get_best_move(new, new.turn)
+                move = get_best_move(new, new.turn, cache)
                 new.make_move(move)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                return
 
             if event.type == pygame.WINDOWRESIZED:
                 BG = pygame.transform.scale(BG, (WIDTH, HEIGHT))
@@ -76,7 +78,15 @@ def main():
                 elif new.result == -1:
                     print("O wins!")
 
+                time.sleep(3)
+                return
+
         re_draw_win()
 
 
 main()
+
+evaluated_len = cache.__len__()
+print(f"{evaluated_len} positions stored!")
+
+save_cache(cache, "cache.pkl")

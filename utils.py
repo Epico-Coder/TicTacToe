@@ -9,6 +9,7 @@ class Position:
         self.corresponding = {1: 'X', 0: '-', -1: 'O'}
         self.turn = 1
         self.result = False
+        self.key = ''.join(''.join(map(str, row)) for row in self.position) + str(self.turn)
 
     def print_table(self):
         horizontal_line = '+' + '---+' * 3
@@ -28,11 +29,16 @@ class Position:
             print(player_to_move, "to move!")
             move = (int(input("Row: ")), int(input("Column: ")))
 
-        self.position[move[0]][move[1]] = self.turn
-        self.update()
+        try:
+            if self.position[move[0]][move[1]] == 0:
+                self.position[move[0]][move[1]] = self.turn
+                self.update()
+        except IndexError:
+            pass
 
     def update(self):
         self.turn = -self.turn
+        self.key = ''.join(''.join(map(str, row)) for row in self.position) + str(self.turn)
         self.check_result()
 
     def check_result(self):
