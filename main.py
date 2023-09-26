@@ -22,7 +22,7 @@ def re_draw_win():
                BOARD_SIZE * WIDTH,
                BOARD_SIZE * HEIGHT)
 
-    evaluation = minimax(new, 0, new.turn, cache)
+    evaluation = minimax(position=new, depth=0, maximizing_player=new.turn, cache=cache)
     normalized = (evaluation + 10) / 20
     draw_bar(0, 0, WIDTH, 0.1 * HEIGHT, normalized)
 

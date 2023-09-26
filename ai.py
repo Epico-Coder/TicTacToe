@@ -18,7 +18,8 @@ def save_cache(cache, file: str):
         pickle.dump(cache, f)
 
 
-def minimax(position: Position, depth=0, maximizing_player: int = 1, cache=None) -> int:
+def minimax(position: Position, depth=0, alpha=float('-inf'), beta=float('inf'),
+            maximizing_player: int = 1, cache=None) -> int:
 
     if cache is None:
         cache = {}
@@ -34,8 +35,13 @@ def minimax(position: Position, depth=0, maximizing_player: int = 1, cache=None)
     if maximizing_player == 1:
         maxEval = float('-inf')
         for child in position.get_children():
-            eval_ = minimax(child, depth + 1, -1)
+            eval_ = minimax(position=child, depth=depth + 1, alpha=alpha, beta=beta, maximizing_player=-1, cache=cache)
+
             maxEval = max(maxEval, eval_)
+            alpha = max(alpha, eval_)
+
+            if alpha >= beta:
+                break
 
         cache[position.key] = maxEval
         return maxEval
@@ -43,8 +49,13 @@ def minimax(position: Position, depth=0, maximizing_player: int = 1, cache=None)
     elif maximizing_player == -1:
         minEval = float('inf')
         for child in position.get_children():
-            eval_ = minimax(child, depth + 1, 1)
+            eval_ = minimax(position=child, depth=depth + 1, alpha=alpha, beta=beta, maximizing_player=1, cache=cache)
+
             minEval = min(minEval, eval_)
+            beta = min(beta, eval_)
+
+            if alpha >= beta:
+                break
 
         cache[position.key] = minEval
         return minEval
@@ -60,7 +71,7 @@ def get_best_move(position: Position, maximizing_player: int = 1, cache: dict = 
             if position.position[i][j] == 0:
                 new_position = copy.deepcopy(position)
                 new_position.make_move((i, j))
-                value = minimax(new_position, 0, -maximizing_player, cache)
+                value = minimax(position=new_position, depth=0, maximizing_player=-maximizing_player, cache=cache)
 
                 if maximizing_player == 1 and value > best_value:
                     best_value = value
