@@ -1,6 +1,21 @@
 import pygame
 
 
+def draw_start(WIDTH, HEIGHT, win):
+    white = (85, 175, 248)
+    x_background_color = (128, 128, 0)
+    o_background_color = (0, 128, 128)
+
+    line_width = 50
+
+    pygame.draw.rect(win, x_background_color, (0, 0, WIDTH // 2, HEIGHT))
+    pygame.draw.line(win, white, (WIDTH * 0.1, HEIGHT * 0.1), (WIDTH * 0.4, HEIGHT * 0.9), line_width)
+    pygame.draw.line(win, white, (WIDTH * 0.1, HEIGHT * 0.9), (WIDTH * 0.4, HEIGHT * 0.1), line_width)
+
+    pygame.draw.rect(win, o_background_color, (WIDTH // 2, 0, WIDTH // 2, HEIGHT))
+    pygame.draw.ellipse(win, white, (WIDTH * 0.6, HEIGHT * 0.1, WIDTH * 0.3, HEIGHT * 0.8), line_width)
+
+
 def draw_x(i, j, board_size, width, height, win):
     board_x = width // 2 - (board_size * width) // 2
     board_y = height // 2 - (board_size * height) // 2
